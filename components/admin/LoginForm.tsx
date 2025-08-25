@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -10,29 +11,65 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
+  const { error: authError, clearError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Clear errors when component mounts or when auth error changes
+  useEffect(() => {
+    if (authError) {
+      setError(authError);
+    }
+  }, [authError]);
+
+  const clearAllErrors = () => {
+    setError('');
+    clearError();
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!email.trim() || !password.trim()) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    if (!email.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     setLoading(true);
-    setError('');
+    clearAllErrors();
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
       if (error) {
-        setError(error.message);
+        // Handle specific error types
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please confirm your email address before signing in.');
+        } else {
+          setError(error.message);
+        }
       } else if (data.user) {
+        // Clear form on successful login
+        setEmail('');
+        setPassword('');
         onLoginSuccess();
       }
-    } catch {
-      setError('An unexpected error occurred');
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }

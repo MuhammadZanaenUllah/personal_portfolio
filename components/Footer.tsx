@@ -32,10 +32,9 @@ const Footer: React.FC = () => {
   ];
 
   const socialLinks: SocialLink[] = [
-    { name: 'GitHub', href: 'https://github.com/alexjohnson', icon: '🐙' },
-    { name: 'LinkedIn', href: 'https://linkedin.com/in/alexjohnson', icon: '💼' },
-    { name: 'Twitter', href: 'https://twitter.com/alexjohnson', icon: '🐦' },
-    { name: 'Email', href: 'mailto:alex@example.com', icon: '📧' }
+    { name: 'GitHub', href: 'https://github.com/MuhammadZanaenUllah', icon: '🐙' },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/zanaen/', icon: '💼' },
+    { name: 'Email', href: 'mailto:contact@zanaen.pk', icon: '📧' }
   ];
 
   return (
@@ -46,10 +45,10 @@ const Footer: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 bg-gradient-to-r from-white to-gray-300 rounded-xl flex items-center justify-center text-gray-900 font-bold text-xl">
-                A
+                Z
               </div>
               <div>
-                <h3 className="text-2xl font-bold">Alex Johnson</h3>
+                <h3 className="text-2xl font-bold">M.Zanaen Ullah</h3>
                 <p className="text-gray-400">Full Stack Developer</p>
               </div>
             </div>

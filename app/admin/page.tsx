@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/contexts/AuthContext';
 import Card from '@/components/ui/Card';
@@ -39,6 +39,7 @@ interface PersonalInfo {
 
 export default function AdminDashboard() {
   const { user, loading: authLoading, error: authError, signOut } = useAuth();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [stats, setStats] = useState<AdminStats>({
     projects: 0,
     skills: 0,
@@ -51,6 +52,63 @@ export default function AdminDashboard() {
   const [editForm, setEditForm] = useState<Partial<PersonalInfo>>({});
   const [loading, setLoading] = useState(true);
   // const [refreshKey, setRefreshKey] = useState(0);
+
+  const loadStats = useCallback(async () => {
+    try {
+      const { data: projects } = await supabase.from('projects').select('id');
+      const { data: skills } = await supabase.from('skills').select('id');
+      const { data: blogPosts } = await supabase.from('blog_posts').select('id');
+      const { data: contactSubmissions } = await supabase.from('contact_submissions').select('id');
+
+      setStats({
+        projects: projects?.length || 0,
+        skills: skills?.length || 0,
+        blogPosts: blogPosts?.length || 0,
+        contactSubmissions: contactSubmissions?.length || 0
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  }, []);
+
+  const loadContactSubmissions = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setContactSubmissions(data || []);
+    } catch (error) {
+      console.error('Error loading contact submissions:', error);
+    }
+  }, []);
+
+  const loadPersonalInfo = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('personal_info')
+        .select('*')
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      setPersonalInfo(data);
+    } catch (error) {
+      console.error('Error loading personal info:', error);
+    }
+  }, []);
+
+  const loadDashboardData = useCallback(async () => {
+    setLoading(true);
+    await Promise.all([
+      loadStats(),
+      loadContactSubmissions(),
+      loadPersonalInfo()
+    ]);
+    setLoading(false);
+  }, [loadStats, loadContactSubmissions, loadPersonalInfo]);
 
   // Load dashboard data
   useEffect(() => {
@@ -84,67 +142,9 @@ export default function AdminDashboard() {
       supabase.removeChannel(contactChannel);
       supabase.removeChannel(personalInfoChannel);
     };
-  }, []);
+  }, [loadDashboardData, loadContactSubmissions, loadStats, loadPersonalInfo]);
 
-  const loadDashboardData = async () => {
-    setLoading(true);
-    await Promise.all([
-      loadStats(),
-      loadContactSubmissions(),
-      loadPersonalInfo()
-    ]);
-    setLoading(false);
-  };
 
-  const loadStats = async () => {
-    try {
-      const [projectsRes, skillsRes, blogRes, contactRes] = await Promise.all([
-        supabase.from('projects').select('id', { count: 'exact' }),
-        supabase.from('skills').select('id', { count: 'exact' }),
-        supabase.from('blog_posts').select('id', { count: 'exact' }),
-        supabase.from('contact_submissions').select('id', { count: 'exact' })
-      ]);
-
-      setStats({
-        projects: projectsRes.count || 0,
-        skills: skillsRes.count || 0,
-        blogPosts: blogRes.count || 0,
-        contactSubmissions: contactRes.count || 0
-      });
-    } catch (error) {
-      console.error('Error loading stats:', error);
-    }
-  };
-
-  const loadContactSubmissions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('contact_submissions')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (error) throw error;
-      setContactSubmissions(data || []);
-    } catch (error) {
-      console.error('Error loading contact submissions:', error);
-    }
-  };
-
-  const loadPersonalInfo = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('personal_info')
-        .select('*')
-        .single();
-
-      if (error) throw error;
-      setPersonalInfo(data);
-      setEditForm(data);
-    } catch (error) {
-      console.error('Error loading personal info:', error);
-    }
-  };
 
   const updateContactStatus = async (id: string, status: 'new' | 'read' | 'replied') => {
     try {
@@ -199,8 +199,12 @@ export default function AdminDashboard() {
   // Show loading spinner while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-black"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Admin Dashboard</h2>
+          <p className="text-gray-600">Checking authentication status...</p>
+        </div>
       </div>
     );
   }
@@ -208,10 +212,17 @@ export default function AdminDashboard() {
   // Show login form if user is not authenticated
   if (!user) {
     return (
-      <div>
+      <div className="min-h-screen bg-gray-50">
         {authError && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center">
-            {authError}
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg shadow-lg max-w-md">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span className="font-medium">{authError}</span>
+              </div>
+            </div>
           </div>
         )}
         <LoginForm onLoginSuccess={handleLoginSuccess} />
@@ -224,7 +235,8 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading admin dashboard...</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Dashboard Data</h2>
+          <p className="text-gray-600">Fetching your admin content...</p>
         </div>
       </div>
     );
@@ -240,7 +252,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600">Manage your portfolio content and monitor activity</p>
           </div>
           <Button
-            onClick={signOut}
+            onClick={() => setShowLogoutConfirm(true)}
             variant="outline"
             className="text-red-600 border-red-600 hover:bg-red-50"
           >
@@ -446,6 +458,42 @@ export default function AdminDashboard() {
           </Card>
         </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Confirm Sign Out
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to sign out? You&apos;ll need to log in again to access the admin dashboard.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button
+                onClick={() => setShowLogoutConfirm(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={async () => {
+                  try {
+                    await signOut();
+                  } catch (error) {
+                    console.error('Logout failed:', error);
+                    // Error is already handled in the context
+                  }
+                  setShowLogoutConfirm(false);
+                }}
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

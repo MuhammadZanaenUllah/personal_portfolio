@@ -1,39 +1,34 @@
-"use client"
-
-import { useState, useEffect } from 'react'
 import { getSkills, getExperience, getPersonalInfo } from '@/lib/supabase'
-import type { Skill, Experience, PersonalInfo } from '@/lib/supabase'
 
-export default function About() {
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [experience, setExperience] = useState<Experience[]>([]);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// SSG: Generate static page at build time
+export const revalidate = false // Static generation
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [skillsData, experienceData, personalData] = await Promise.all([
-          getSkills(),
-          getExperience(),
-          getPersonalInfo()
-        ]);
-        
-        setSkills(skillsData);
-        setExperience(experienceData);
-        setPersonalInfo(personalData);
-      } catch (err) {
-        setError('Failed to load data');
-        console.error('Error fetching data:', err);
-      } finally {
-        setLoading(false);
-      }
+// Server-side data fetching for SSG
+async function getAboutPageData() {
+  try {
+    const [skillsData, experienceData, personalData] = await Promise.all([
+      getSkills(),
+      getExperience(),
+      getPersonalInfo()
+    ]);
+    
+    return {
+      skills: skillsData,
+      experience: experienceData,
+      personalInfo: personalData
     };
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    return {
+      skills: [],
+      experience: [],
+      personalInfo: null
+    };
+  }
+}
 
-    fetchData();
-  }, []);
+export default async function About() {
+  const { skills, experience, personalInfo } = await getAboutPageData();
 
   const formatDateRange = (startDate: string, endDate?: string, current?: boolean) => {
     const start = new Date(startDate).getFullYear();
@@ -43,31 +38,6 @@ export default function About() {
     const end = endDate ? new Date(endDate).getFullYear() : start;
     return `${start} - ${end}`;
   };
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-red-600">{error}</p>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 py-20">
@@ -89,7 +59,7 @@ export default function About() {
               <h2 className="text-3xl font-bold mb-6 text-gray-900">My Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  I&apos;m Alex Johnson, a passionate full-stack developer and UI/UX designer based in San Francisco. 
+                  I&apos;m M.Zanaen Ullah, a passionate full-stack developer and UI/UX designer based in Pakistan. 
                   My journey into tech started during college when I built my first website for a local business.
                 </p>
                 <p>
@@ -99,7 +69,7 @@ export default function About() {
                 </p>
                 <p>
                   When I&apos;m not coding, you can find me exploring new technologies, contributing to open-source projects, 
-                  or hiking in the beautiful California mountains.
+                  or hiking in the beautiful mountains on the northen side of Pakistan.
                 </p>
               </div>
             </div>
