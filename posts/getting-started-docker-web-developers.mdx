@@ -1,0 +1,117 @@
+---
+title: "Getting Started with Docker for Web Developers"
+date: "2024-05-15"
+author: "John Doe"
+tags: ["Docker", "DevOps", "Containers", "Web Development"]
+---
+
+# Getting Started with Docker for Web Developers
+
+Docker has revolutionized how we develop, deploy, and manage applications. For web developers, Docker provides a consistent environment across development, testing, and production. Let's explore how to get started with Docker.
+
+## What is Docker?
+
+Docker is a containerization platform that packages applications and their dependencies into lightweight, portable containers.
+
+## Basic Docker Concepts
+
+### Images vs Containers
+
+- **Image**: A read-only template used to create containers
+- **Container**: A running instance of an image
+
+### Dockerfile
+
+A Dockerfile defines how to build a Docker image:
+
+```dockerfile
+# Use official Node.js runtime as base image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy application code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Start application
+CMD ["npm", "start"]
+```
+
+## Docker Commands
+
+### Building Images
+
+```bash
+# Build image from Dockerfile
+docker build -t my-app .
+
+# Build with specific tag
+docker build -t my-app:v1.0 .
+```
+
+### Running Containers
+
+```bash
+# Run container
+docker run -p 3000:3000 my-app
+
+# Run in detached mode
+docker run -d -p 3000:3000 my-app
+
+# Run with environment variables
+docker run -e NODE_ENV=production -p 3000:3000 my-app
+```
+
+## Docker Compose
+
+Docker Compose manages multi-container applications:
+
+```yaml
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+```
+
+## Best Practices
+
+1. **Use Multi-stage Builds**: Reduce image size
+2. **Leverage Layer Caching**: Order Dockerfile commands efficiently
+3. **Use .dockerignore**: Exclude unnecessary files
+4. **Run as Non-root User**: Improve security
+5. **Keep Images Small**: Use alpine variants when possible
+
+## Conclusion
+
+Docker simplifies development workflows and ensures consistency across environments. Start with simple containers and gradually adopt more advanced features like multi-stage builds and orchestration.
