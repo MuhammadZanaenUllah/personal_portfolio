@@ -5,6 +5,7 @@ import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import NotificationSystem from "../components/NotificationSystem";
 import { AuthProvider } from "../contexts/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,13 +15,16 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "M.Zanaen Ullah - Full Stack Developer",
-  description: "Passionate full stack developer specializing in modern web technologies, creating exceptional digital experiences with clean code and innovative solutions.",
-  keywords: "full stack developer, web development, React, Next.js, TypeScript, JavaScript, portfolio",
+  description:
+    "Passionate full stack developer specializing in modern web technologies, creating exceptional digital experiences with clean code and innovative solutions.",
+  keywords:
+    "full stack developer, web development, React, Next.js, TypeScript, JavaScript, portfolio",
   authors: [{ name: "M.Zanaen Ullah" }],
   creator: "M.Zanane Ullah",
   openGraph: {
     title: "M.Zanane Ullah - Full Stack Developer",
-    description: "Passionate full stack developer specializing in modern web technologies",
+    description:
+      "Passionate full stack developer specializing in modern web technologies",
     url: "https://zanaen.pk",
     siteName: "M.Zanane Ullah Portfolio",
     images: [
@@ -37,7 +41,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "M.Zanane Ullah - Full Stack Developer",
-    description: "Passionate full stack developer specializing in modern web technologies",
+    description:
+      "Passionate full stack developer specializing in modern web technologies",
     images: ["/og-image.jpg"],
   },
   robots: {
@@ -60,16 +65,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`}
-      >
+      <body className={`${inter.variable} antialiased`}>
         <AuthProvider>
           <Navigation />
           <main className="pt-16">
             {children}
+            <Analytics />
           </main>
           <Footer />
-          <NotificationSystem position="top-right" maxNotifications={3} autoHideDelay={6000} />
+          <NotificationSystem
+            position="top-right"
+            maxNotifications={3}
+            autoHideDelay={6000}
+          />
         </AuthProvider>
       </body>
     </html>
