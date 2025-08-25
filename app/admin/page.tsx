@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import { useAuth } from '@/contexts/AuthContext';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import LiveAnalytics from '@/components/admin/LiveAnalytics';
+import ContentManager from '@/components/admin/ContentManager';
+import LoginForm from '@/components/admin/LoginForm';
 
 interface AdminStats {
   projects: number;
@@ -34,6 +38,7 @@ interface PersonalInfo {
 }
 
 export default function AdminDashboard() {
+  const { user, loading: authLoading, error: authError, signOut } = useAuth();
   const [stats, setStats] = useState<AdminStats>({
     projects: 0,
     skills: 0,
@@ -45,6 +50,7 @@ export default function AdminDashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<PersonalInfo>>({});
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Load dashboard data
   useEffect(() => {
@@ -186,6 +192,33 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleLoginSuccess = () => {
+    setRefreshKey(prev => prev + 1);
+  };
+
+  // Show loading spinner while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-black"></div>
+      </div>
+    );
+  }
+
+  // Show login form if user is not authenticated
+  if (!user) {
+    return (
+      <div>
+        {authError && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center">
+            {authError}
+          </div>
+        )}
+        <LoginForm onLoginSuccess={handleLoginSuccess} />
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -201,9 +234,18 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage your portfolio content and monitor activity</p>
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+            <p className="text-gray-600">Manage your portfolio content and monitor activity</p>
+          </div>
+          <Button
+            onClick={signOut}
+            variant="outline"
+            className="text-red-600 border-red-600 hover:bg-red-50"
+          >
+            Sign Out
+          </Button>
         </div>
 
         {/* Stats Grid */}
@@ -265,6 +307,17 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
+        {/* Live Analytics */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Real-time Analytics</h2>
+          <LiveAnalytics refreshInterval={30000} />
+        </div>
+
+        {/* Content Management */}
+        <div className="mb-8">
+          <ContentManager />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Personal Info Management */}
           <Card className="p-6">
@@ -283,8 +336,9 @@ export default function AdminDashboard() {
                 {isEditing ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                      <label htmlFor="edit-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                       <input
+                        id="edit-name"
                         type="text"
                         value={editForm.name || ''}
                         onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
@@ -292,8 +346,9 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                       <input
+                        id="edit-title"
                         type="text"
                         value={editForm.title || ''}
                         onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
@@ -301,8 +356,9 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                      <label htmlFor="edit-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                       <input
+                        id="edit-email"
                         type="email"
                         value={editForm.email || ''}
                         onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
@@ -310,8 +366,9 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                      <label htmlFor="edit-bio" className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
                       <textarea
+                        id="edit-bio"
                         value={editForm.bio || ''}
                         onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
                         rows={4}

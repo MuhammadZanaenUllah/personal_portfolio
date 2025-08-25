@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
+import NotificationSystem from "../components/NotificationSystem";
+import { AuthProvider } from "../contexts/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -61,11 +63,14 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
-        <Navigation />
-        <main className="pt-16">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <Navigation />
+          <main className="pt-16">
+            {children}
+          </main>
+          <Footer />
+          <NotificationSystem position="top-right" maxNotifications={3} autoHideDelay={6000} />
+        </AuthProvider>
       </body>
     </html>
   );

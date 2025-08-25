@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "node scripts/seed-database.js",
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",

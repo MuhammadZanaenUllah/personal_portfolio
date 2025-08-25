@@ -12,6 +12,7 @@ interface NavItem {
 const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
@@ -22,6 +23,14 @@ const Navigation: React.FC = () => {
     { name: 'Blog', href: '/blog', icon: '📝' },
     { name: 'Contact', href: '/contact', icon: '📧' }
   ];
+
+  // Add admin link in development or with admin parameter
+  const showAdmin = process.env.NODE_ENV === 'development' || 
+    (typeof window !== 'undefined' && window.location.search.includes('admin=true'));
+  
+  if (showAdmin) {
+    navItems.push({ name: 'Admin', href: '/admin', icon: '⚙️' });
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,8 +48,21 @@ const Navigation: React.FC = () => {
     return pathname.startsWith(href);
   };
 
+  // Update active index when pathname changes
+  useEffect(() => {
+    const currentIndex = navItems.findIndex(item => {
+      if (item.href === '/') {
+        return pathname === '/';
+      }
+      return pathname.startsWith(item.href);
+    });
+    if (currentIndex !== -1) {
+      setActiveIndex(currentIndex);
+    }
+  }, [pathname, navItems]);
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out animate-in slide-in-from-top-4 fade-in ${
       scrolled 
         ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200' 
         : 'bg-transparent'
@@ -49,28 +71,41 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-r from-gray-900 to-gray-700 rounded-xl flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform duration-300">
-              A
+            <div className="w-10 h-10 bg-gradient-to-r from-gray-900 to-gray-700 rounded-xl flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 ease-out shadow-lg group-hover:shadow-xl">
+              Z
             </div>
-            <span className="font-bold text-xl text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
-              Alex Johnson
+            <span className="font-bold text-xl text-gray-900 group-hover:text-gray-700 transition-all duration-300 group-hover:tracking-wide">
+              M.Zanaen Ullah
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
+          <div className="hidden md:flex items-center relative">
+            {/* Sliding background indicator */}
+            <div 
+              className="absolute w-28 h-10 bg-black rounded-full transition-all duration-500 ease-out shadow-lg"
+              style={{
+                transform: `translateX(${activeIndex * 112}px)`,
+                zIndex: 0
+              }}
+            />
+            {navItems.map((item, index) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
+                className={`w-28 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 hover:scale-105 hover:-translate-y-1 relative group animate-in slide-in-from-top-2 fade-in z-10 ${
                   isActive(item.href)
-                    ? 'bg-black text-white shadow-lg'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-black'
+                    ? 'text-white'
+                    : 'text-gray-700 hover:text-black'
                 }`}
+                style={{
+                  animationDelay: `${index * 100}ms`
+                }}
               >
-                <span className="text-base">{item.icon}</span>
-                {item.name}
+                <span className="text-base transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">{item.icon}</span>
+                <span className="relative">
+                  {item.name}
+                </span>
               </Link>
             ))}
           </div>
@@ -79,7 +114,7 @@ const Navigation: React.FC = () => {
           <div className="hidden md:block">
             <Link
               href="/contact"
-              className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
             >
               Let's Talk
             </Link>
@@ -88,17 +123,20 @@ const Navigation: React.FC = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300"
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:scale-110 transition-all duration-300 group animate-in slide-in-from-top-2 fade-in"
+            style={{
+              animationDelay: `${navItems.length * 100}ms`
+            }}
             aria-label="Toggle mobile menu"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
+              <span className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
                 isOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
               }`} />
               <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                isOpen ? 'opacity-0' : 'opacity-100'
+                isOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
               }`} />
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
+              <span className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
                 isOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
               }`} />
             </div>
@@ -106,30 +144,45 @@ const Navigation: React.FC = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden transition-all duration-300 overflow-hidden ${
+        <div className={`md:hidden transition-all duration-500 ease-out overflow-hidden ${
           isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}>
           <div className="py-4 space-y-2">
-            {navItems.map((item) => (
+            {navItems.map((item, index) => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-300 flex items-center gap-3 ${
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-500 ease-out flex items-center gap-3 hover:scale-105 hover:-translate-y-1 hover:shadow-md group ${
+                  isOpen ? 'animate-in slide-in-from-left-4 fade-in' : 'animate-out slide-out-to-left-4 fade-out'
+                } ${
                   isActive(item.href)
-                    ? 'bg-black text-white shadow-lg'
+                    ? 'bg-black text-white shadow-lg transform scale-105'
                     : 'text-gray-700 hover:bg-gray-100 hover:text-black'
                 }`}
+                style={{
+                  animationDelay: isOpen ? `${index * 100 + 200}ms` : '0ms'
+                }}
               >
-                <span className="text-lg">{item.icon}</span>
-                {item.name}
+                <span className="text-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">{item.icon}</span>
+                <span className="relative">
+                  {item.name}
+                  <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full ${
+                    isActive(item.href) ? 'w-full' : ''
+                  }`} />
+                </span>
               </Link>
             ))}
-            <div className="pt-4 border-t border-gray-200">
+            <div className={`pt-4 border-t border-gray-200 transition-all duration-500 ease-out ${
+              isOpen ? 'animate-in slide-in-from-left-4 fade-in' : 'animate-out slide-out-to-left-4 fade-out'
+            }`}
+            style={{
+              animationDelay: isOpen ? `${navItems.length * 100 + 300}ms` : '0ms'
+            }}>
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300"
+                className="block w-full text-center bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
               >
                 Let's Talk
               </Link>

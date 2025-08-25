@@ -1,24 +1,129 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Website
 
-## Getting Started
+A modern, responsive portfolio website built with Next.js, TypeScript, Tailwind CSS, and Supabase. Features a complete admin dashboard for content management, blog system, and contact form handling.
 
-First, run the development server:
+## ✨ Features
 
+- **Responsive Design**: Mobile-first approach with modern UI/UX
+- **Admin Dashboard**: Secure admin panel for content management
+- **Blog System**: MDX-powered blog with syntax highlighting
+- **Contact Form**: Integrated contact form with Supabase storage
+- **Real-time Analytics**: Live visitor tracking and statistics
+- **Content Management**: Easy-to-use CMS for projects, skills, and experience
+- **Authentication**: Secure admin authentication with Supabase Auth
+- **SEO Optimized**: Meta tags, OpenGraph, and Twitter cards
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm/yarn/pnpm
+- Supabase account
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd porfolio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Add your Supabase credentials to `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+4. Set up the database:
+```bash
+# Run the setup SQL in your Supabase SQL Editor
+# File: supabase-setup.sql
+
+# Seed with sample data (optional)
+npm run seed
+```
+
+5. Create an admin user:
+```bash
+npm run create-admin
+```
+
+6. Start the development server:
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to view the website.
+Access the admin dashboard at [http://localhost:3000/admin](http://localhost:3000/admin).
+
+## 🔐 Admin Setup
+
+The portfolio includes a secure admin dashboard for content management. You can create admin credentials using several methods:
+
+### Method 1: Using the Script (Recommended)
+```bash
+npm run create-admin
+```
+This interactive script will prompt for email and password.
+
+### Method 2: Environment Variables
+```bash
+EMAIL=admin@yourdomain.com PASSWORD=yourpassword npm run create-admin
+```
+
+### Method 3: Supabase Dashboard
+1. Go to your Supabase project dashboard
+2. Navigate to Authentication > Users
+3. Click "Add user" and fill in the details
+4. Check "Auto Confirm User"
+
+### Method 4: SQL Script
+Run the SQL script in your Supabase SQL Editor:
+```sql
+-- See scripts/create-admin-user.sql for the complete script
+```
+
+For detailed instructions, see [ADMIN_SETUP.md](./ADMIN_SETUP.md).
+
+## 📁 Project Structure
+
+```
+porfolio/
+├── app/                    # Next.js app directory
+│   ├── admin/             # Admin dashboard
+│   ├── blog/              # Blog pages
+│   └── ...                # Other pages
+├── components/            # React components
+│   ├── admin/            # Admin-specific components
+│   └── ui/               # Reusable UI components
+├── contexts/             # React contexts
+├── data/                 # Static data files
+├── lib/                  # Utility libraries
+├── posts/                # MDX blog posts
+├── scripts/              # Database and admin scripts
+└── public/               # Static assets
+```
+
+## 🛠️ Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run seed` - Seed database with sample data
+- `npm run create-admin` - Create admin user
 
 ## Learn More
 
