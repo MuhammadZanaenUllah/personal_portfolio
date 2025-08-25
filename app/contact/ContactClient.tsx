@@ -2,6 +2,36 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+// FAQ Item Component
+function FAQItem({ question, answer }: { question: string; answer: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-gray-200">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-8 py-6 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200"
+      >
+        <h3 className="text-xl font-bold text-gray-900 pr-4">
+          {question}
+        </h3>
+        <div className={`flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+          <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className="px-8 pb-6">
+          <p className="text-gray-600 leading-relaxed">
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 type ContactForm = {
   name: string;
   email: string;
@@ -124,7 +154,7 @@ export default function ContactClient({ personalInfo, socialLinks }: ContactClie
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label
@@ -372,46 +402,65 @@ export default function ContactClient({ personalInfo, socialLinks }: ContactClie
 
         {/* FAQ Section */}
         <div className="mt-20 animate-fade-in-up animation-delay-600">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Frequently Asked Questions
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                What&apos;s your typical response time?
-              </h3>
-              <p className="text-gray-600">
-                I usually respond to all inquiries within 24 hours. For urgent
-                matters, feel free to reach out via phone or LinkedIn.
-              </p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Got questions? Here are answers to the most common inquiries about my services and process.
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="space-y-4">
+              {[
+                {
+                  question: "What's your typical response time?",
+                  answer: "I usually respond to all inquiries within 24 hours. For urgent matters, feel free to reach out via phone or LinkedIn. I understand that timing can be crucial for business decisions, so I prioritize quick and thorough communication."
+                },
+                {
+                  question: "Do you work with international clients?",
+                  answer: "Absolutely! I work with clients worldwide and am comfortable with different time zones and communication preferences. I've successfully collaborated with teams across North America, Europe, Asia, and Australia, adapting my schedule to ensure smooth project coordination."
+                },
+                {
+                  question: "What types of projects do you take on?",
+                  answer: "I specialize in web applications, e-commerce platforms, and custom software solutions. This includes React/Next.js applications, full-stack development, API integrations, database design, and UI/UX implementation. I'm always open to discussing unique challenges and innovative projects."
+                },
+                {
+                  question: "Do you offer ongoing support?",
+                  answer: "Yes! I provide maintenance, updates, and ongoing support for all projects. This includes bug fixes, feature enhancements, security updates, performance optimization, and technical consultation. We can discuss support packages that fit your specific needs and budget."
+                },
+                {
+                  question: "What's your development process like?",
+                  answer: "I follow an agile approach with regular communication and milestone reviews. The process typically includes: initial consultation, project planning, design mockups, development phases with regular updates, testing, deployment, and post-launch support. You'll be involved throughout the entire journey."
+                },
+                {
+                  question: "How do you handle project pricing?",
+                  answer: "Pricing depends on project scope, complexity, and timeline. I offer both fixed-price projects and hourly rates. After our initial discussion, I'll provide a detailed proposal with transparent pricing, timeline, and deliverables. No hidden fees or surprises."
+                }
+              ].map((faq, index) => (
+                <FAQItem key={index} question={faq.question} answer={faq.answer} />
+              ))}
             </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Do you work with international clients?
-              </h3>
-              <p className="text-gray-600">
-                Absolutely! I work with clients worldwide and am comfortable
-                with different time zones and communication preferences.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                What types of projects do you take on?
-              </h3>
-              <p className="text-gray-600">
-                I specialize in web applications, e-commerce platforms, and
-                custom software solutions. I&apos;m always open to discussing
-                unique challenges.
-              </p>
-            </div>
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Do you offer ongoing support?
-              </h3>
-              <p className="text-gray-600">
-                Yes! I provide maintenance, updates, and ongoing support for all
-                projects. We can discuss support packages that fit your needs.
-              </p>
+            
+            <div className="mt-12 text-center">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100 shadow-sm">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Still have questions?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Don't hesitate to reach out! I'm here to help clarify any doubts and discuss your project in detail.
+                </p>
+                <button 
+                  onClick={() => {
+                    const contactForm = document.getElementById('contact-form');
+                    contactForm?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-8 py-3 bg-black text-white rounded-full font-semibold transition-all duration-300 hover:bg-gray-800 hover:scale-105 hover:shadow-lg"
+                >
+                  Get in Touch
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -13,6 +13,7 @@ const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(0);
   const pathname = usePathname();
 
   const navItems: NavItem[] = useMemo(() => {
@@ -41,8 +42,19 @@ const Navigation: React.FC = () => {
       setScrolled(window.scrollY > 50);
     };
 
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Set initial window width
+    setWindowWidth(window.innerWidth);
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const isActive = (href: string) => {
@@ -79,17 +91,18 @@ const Navigation: React.FC = () => {
               Z
             </div>
             <span className="font-bold text-xl text-gray-900 group-hover:text-gray-700 transition-all duration-300 group-hover:tracking-wide">
-              M.Zanaen Ullah
+              <span className="hidden sm:inline">M.Zanaen Ullah</span>
+              <span className="sm:hidden">Zanaen</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center relative">
-            {/* Sliding background indicator */}
+            {/* Sliding background indicator - only show on larger screens */}
             <div 
-              className="absolute w-28 h-10 bg-black rounded-full transition-all duration-500 ease-out shadow-lg"
+              className="absolute w-24 lg:w-28 h-10 bg-black rounded-full transition-all duration-500 ease-out shadow-lg hidden sm:block"
               style={{
-                transform: `translateX(${activeIndex * 112}px)`,
+                transform: `translateX(${activeIndex * (windowWidth >= 1024 ? 112 : 96)}px)`,
                 zIndex: 0
               }}
             />
@@ -97,7 +110,7 @@ const Navigation: React.FC = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`w-28 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 hover:scale-105 hover:-translate-y-1 relative group animate-in slide-in-from-top-2 fade-in z-10 ${
+                className={`w-24 lg:w-28 px-3 lg:px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 hover:scale-105 hover:-translate-y-1 relative group animate-in slide-in-from-top-2 fade-in z-10 ${
                   isActive(item.href)
                     ? 'text-white'
                     : 'text-gray-700 hover:text-black'
@@ -107,7 +120,7 @@ const Navigation: React.FC = () => {
                 }}
               >
                 <span className="text-base transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">{item.icon}</span>
-                <span className="relative">
+                <span className="relative hidden sm:inline">
                   {item.name}
                 </span>
               </Link>
