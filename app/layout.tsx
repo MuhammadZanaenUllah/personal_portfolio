@@ -70,7 +70,7 @@ export default function RootLayout({
           <Navigation />
           <main className="pt-16">
             {children}
-            <Analytics />
+            {/* <Analytics /> */}
           </main>
           <Footer />
           <NotificationSystem
