@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<PersonalInfo>>({});
   const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
+  // const [refreshKey, setRefreshKey] = useState(0);
 
   // Load dashboard data
   useEffect(() => {
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
   };
 
   const handleLoginSuccess = () => {
-    setRefreshKey(prev => prev + 1);
+    // setRefreshKey(prev => prev + 1);
   };
 
   // Show loading spinner while checking authentication

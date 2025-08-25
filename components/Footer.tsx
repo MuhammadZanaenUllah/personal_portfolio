@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
             </div>
             <p className="text-gray-300 mb-6 max-w-md leading-relaxed">
               Passionate about creating exceptional digital experiences through clean code, 
-              innovative design, and cutting-edge technology. Let's build something amazing together.
+              innovative design, and cutting-edge technology. Let&apos;s build something amazing together.
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social) => (

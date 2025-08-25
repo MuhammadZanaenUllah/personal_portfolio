@@ -2,20 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Code, Palette, Server, Smartphone, Github, Linkedin, Mail, ExternalLink, Star, Users, Coffee, Award } from 'lucide-react'
-import Card, { CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { ArrowRight, Github, ExternalLink } from 'lucide-react'
+import Card, { CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import AnimatedSection from '@/components/ui/AnimatedSection'
 import { 
   getPersonalInfo, 
   getFeaturedProjects, 
-  getFeaturedBlogPosts, 
-  getSkills,
+  getFeaturedBlogPosts,
   type PersonalInfo,
   type Project,
-  type BlogPost,
-  type Skill
+  type BlogPost
 } from '@/lib/supabase'
 import { stats } from '@/data/skills' // Keep stats for now until we migrate them
 
@@ -81,7 +79,7 @@ export default function Home() {
         <div className="relative z-10 text-center max-w-4xl mx-auto">
           <div className="mb-8 animate-fade-in-up">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent leading-tight">
-              Hi, I'm <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{personalInfo.name}</span>
+              Hi, I&apos;m <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{personalInfo.name}</span>
             </h1>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light mb-6 text-gray-700 animate-fade-in-up animation-delay-200">
               {personalInfo.title}

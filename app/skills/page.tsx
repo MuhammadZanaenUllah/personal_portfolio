@@ -1,11 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Code, Database, Server, Smartphone, Palette, Cloud, Award, TrendingUp, Users, Coffee } from 'lucide-react';
-import Card, { CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import Button from '@/components/ui/Button';
-import Badge, { SkillBadge } from '@/components/ui/Badge';
-import ProgressBar, { SkillProgress, CircularProgress } from '@/components/ui/ProgressBar';
-import AnimatedSection from '@/components/ui/AnimatedSection';
+import { Award } from 'lucide-react';
+import Card, { CardContent } from '@/components/ui/Card';
+import Badge from '@/components/ui/Badge';
+import ProgressBar from '@/components/ui/ProgressBar';
 import { getSkills, getCertifications } from '@/lib/supabase';
 import type { Skill, Certification } from '@/lib/supabase';
 
@@ -162,14 +160,14 @@ export default function Skills() {
           <h2 className="text-3xl font-bold mb-6">Ready to Build Something Amazing?</h2>
           <p className="text-xl mb-8 opacity-90 max-w-3xl mx-auto">
             With expertise across the full stack and a passion for creating exceptional user experiences, 
-            I'm ready to tackle your next project.
+            I&apos;m ready to tackle your next project.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/projects" className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold transition-all duration-300 hover:bg-gray-100 hover:scale-105 hover:shadow-xl">
               View My Projects
             </a>
             <a href="/contact" className="px-8 py-4 border-2 border-white text-white rounded-full font-semibold transition-all duration-300 hover:bg-white hover:text-blue-600 hover:scale-105 hover:shadow-xl">
-              Let's Collaborate
+              Let&apos;s Collaborate
             </a>
           </div>
         </div>

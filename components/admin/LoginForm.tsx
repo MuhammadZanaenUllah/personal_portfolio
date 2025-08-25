@@ -31,7 +31,7 @@ export default function LoginForm({ onLoginSuccess }: LoginFormProps) {
       } else if (data.user) {
         onLoginSuccess();
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

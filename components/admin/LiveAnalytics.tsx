@@ -17,7 +17,7 @@ interface ActivityItem {
   type: 'contact' | 'page_view' | 'admin_action';
   description: string;
   timestamp: Date;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 interface LiveAnalyticsProps {
@@ -44,7 +44,7 @@ export default function LiveAnalytics({ refreshInterval = 30000 }: LiveAnalytics
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'contact_submissions' },
         (payload) => {
-          const newSubmission = payload.new as any;
+          const newSubmission = payload.new as { name: string; email: string; subject: string };
           addActivity({
             type: 'contact',
             description: `New contact from ${newSubmission.name}`,
@@ -119,12 +119,7 @@ export default function LiveAnalytics({ refreshInterval = 30000 }: LiveAnalytics
   const loadAnalytics = async () => {
     try {
       // Load basic counts from database
-      const [contactRes, projectsRes, skillsRes, blogRes] = await Promise.all([
-        supabase.from('contact_submissions').select('id', { count: 'exact' }),
-        supabase.from('projects').select('id', { count: 'exact' }),
-        supabase.from('skills').select('id', { count: 'exact' }),
-        supabase.from('blog_posts').select('id', { count: 'exact' })
-      ]);
+      const contactRes = await supabase.from('contact_submissions').select('id', { count: 'exact' });
 
       // Load recent contact submissions for activity feed
       const { data: recentContacts } = await supabase
@@ -143,8 +138,6 @@ export default function LiveAnalytics({ refreshInterval = 30000 }: LiveAnalytics
       }));
 
       // Simulate some analytics data (in a real app, you'd track this properly)
-      const now = new Date();
-      const hoursSinceStart = Math.floor((now.getTime() - new Date().setHours(0, 0, 0, 0)) / (1000 * 60 * 60));
       
       setAnalytics(prev => ({
         ...prev,
@@ -290,8 +283,8 @@ export default function LiveAnalytics({ refreshInterval = 30000 }: LiveAnalytics
                   </p>
                   {activity.metadata && (
                     <div className="text-xs text-gray-400 mt-1">
-                      {activity.metadata.email && `Email: ${activity.metadata.email}`}
-                      {activity.metadata.subject && ` | Subject: ${activity.metadata.subject}`}
+                      {typeof activity.metadata.email === 'string' ? `Email: ${activity.metadata.email}` : null}
+                      {typeof activity.metadata.subject === 'string' ? <span>{` | Subject: ${activity.metadata.subject}`}</span> : null}
                     </div>
                   )}
                 </div>

@@ -1,12 +1,6 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Calendar, MapPin, Mail, Phone, Github, Linkedin, Twitter, Download, ExternalLink, Award, Users, Coffee, Code } from 'lucide-react'
-import Card, { CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import Button from '@/components/ui/Button'
-import Badge, { SkillBadge } from '@/components/ui/Badge'
-import ProgressBar, { SkillProgress } from '@/components/ui/ProgressBar'
-import AnimatedSection from '@/components/ui/AnimatedSection'
 import { getSkills, getExperience, getPersonalInfo } from '@/lib/supabase'
 import type { Skill, Experience, PersonalInfo } from '@/lib/supabase'
 
@@ -95,16 +89,16 @@ export default function About() {
               <h2 className="text-3xl font-bold mb-6 text-gray-900">My Story</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed">
                 <p>
-                  I'm Alex Johnson, a passionate full-stack developer and UI/UX designer based in San Francisco. 
+                  I&apos;m Alex Johnson, a passionate full-stack developer and UI/UX designer based in San Francisco. 
                   My journey into tech started during college when I built my first website for a local business.
                 </p>
                 <p>
-                  Over the years, I've had the privilege of working with startups, agencies, and enterprise companies, 
+                  Over the years, I&apos;ve had the privilege of working with startups, agencies, and enterprise companies, 
                   helping them bring their digital visions to life. I believe in writing clean, maintainable code 
                   and creating user experiences that are both beautiful and functional.
                 </p>
                 <p>
-                  When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, 
+                  When I&apos;m not coding, you can find me exploring new technologies, contributing to open-source projects, 
                   or hiking in the beautiful California mountains.
                 </p>
               </div>
@@ -216,10 +210,10 @@ export default function About() {
 
         {/* CTA Section */}
         <div className="text-center mt-16 animate-fade-in-up animation-delay-800">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Let's Work Together</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Let&apos;s Work Together</h2>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            I'm always interested in new opportunities and exciting projects. 
-            Let's discuss how we can bring your ideas to life.
+            I&apos;m always interested in new opportunities and exciting projects. 
+            Let&apos;s discuss how we can bring your ideas to life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/contact" className="px-8 py-4 bg-black text-white rounded-full font-semibold transition-all duration-300 hover:bg-gray-800 hover:scale-105 hover:shadow-xl">

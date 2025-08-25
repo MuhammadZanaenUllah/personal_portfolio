@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+
 
 import { getProjects } from '@/lib/supabase';
 import type { Project } from '@/lib/supabase';
@@ -215,7 +215,7 @@ export default function Projects() {
         <div className="text-center mt-20 animate-fade-in-up animation-delay-800">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Interested in Working Together?</h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            I'm always excited to take on new challenges and create amazing digital experiences.
+            I&apos;m always excited to take on new challenges and create amazing digital experiences.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/contact" className="px-8 py-4 bg-black text-white rounded-full font-semibold transition-all duration-300 hover:bg-gray-800 hover:scale-105 hover:shadow-xl">

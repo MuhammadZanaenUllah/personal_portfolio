@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -15,22 +15,26 @@ const Navigation: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const pathname = usePathname();
 
-  const navItems: NavItem[] = [
-    { name: 'Home', href: '/', icon: '🏠' },
-    { name: 'About', href: '/about', icon: '👨‍💻' },
-    { name: 'Skills', href: '/skills', icon: '⚡' },
-    { name: 'Projects', href: '/projects', icon: '🚀' },
-    { name: 'Blog', href: '/blog', icon: '📝' },
-    { name: 'Contact', href: '/contact', icon: '📧' }
-  ];
+  const navItems: NavItem[] = useMemo(() => {
+    const baseItems = [
+      { name: 'Home', href: '/', icon: '🏠' },
+      { name: 'About', href: '/about', icon: '👨‍💻' },
+      { name: 'Skills', href: '/skills', icon: '⚡' },
+      { name: 'Projects', href: '/projects', icon: '🚀' },
+      { name: 'Blog', href: '/blog', icon: '📝' },
+      { name: 'Contact', href: '/contact', icon: '📧' }
+    ];
 
-  // Add admin link in development or with admin parameter
-  const showAdmin = process.env.NODE_ENV === 'development' || 
-    (typeof window !== 'undefined' && window.location.search.includes('admin=true'));
-  
-  if (showAdmin) {
-    navItems.push({ name: 'Admin', href: '/admin', icon: '⚙️' });
-  }
+    // Add admin link in development or with admin parameter
+    const showAdmin = process.env.NODE_ENV === 'development' || 
+      (typeof window !== 'undefined' && window.location.search.includes('admin=true'));
+    
+    if (showAdmin) {
+      baseItems.push({ name: 'Admin', href: '/admin', icon: '⚙️' });
+    }
+
+    return baseItems;
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -116,7 +120,7 @@ const Navigation: React.FC = () => {
               href="/contact"
               className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
             >
-              Let's Talk
+              Let&apos;s Talk
             </Link>
           </div>
 
@@ -184,7 +188,7 @@ const Navigation: React.FC = () => {
                 onClick={() => setIsOpen(false)}
                 className="block w-full text-center bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
               >
-                Let's Talk
+                Let&apos;s Talk
               </Link>
             </div>
           </div>

@@ -62,13 +62,13 @@ export default function ContentManager() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingItem, setEditingItem] = useState<any>(null);
+  const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     loadContent();
     setupRealtimeSubscriptions();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setupRealtimeSubscriptions = () => {
     // Projects subscription
@@ -157,7 +157,7 @@ export default function ContentManager() {
     }
   };
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: Project | Skill | BlogPost) => {
     setEditingItem({ ...item });
     setIsEditing(true);
   };
@@ -518,7 +518,7 @@ export default function ContentManager() {
                   type="text"
                   id="edit-title-name"
                   placeholder={`Enter ${activeTab === 'skills' ? 'skill name' : 'title'}`}
-                  value={editingItem.title || editingItem.name || ''}
+                  value={(editingItem.title as string) || (editingItem.name as string) || ''}
                   onChange={(e) => setEditingItem({
                     ...editingItem,
                     [activeTab === 'skills' ? 'name' : 'title']: e.target.value
@@ -535,7 +535,7 @@ export default function ContentManager() {
                     min="0"
                     max="100"
                     placeholder="Enter level percentage (0-100)"
-                    value={editingItem.level || 0}
+                    value={(editingItem.level as number) || 0}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       level: parseInt(e.target.value)
