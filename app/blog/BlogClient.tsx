@@ -108,7 +108,7 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer ${
                       selectedCategory === category
                         ? "bg-black text-white shadow-lg"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -129,9 +129,9 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => setSelectedTag("")}
-                    className={`px-3 py-1 rounded-full text-sm transition-all duration-300 ${
+                    className={`px-3 py-1 rounded-full text-sm transition-all duration-300 cursor-pointer ${
                       !selectedTag
-                        ? "bg-blue-600 text-white"
+                        ? "bg-black text-white"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
@@ -141,9 +141,9 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
                     <button
                       key={tag}
                       onClick={() => setSelectedTag(tag)}
-                      className={`px-3 py-1 rounded-full text-sm transition-all duration-300 ${
+                      className={`px-3 py-1 rounded-full text-sm transition-all duration-300 cursor-pointer ${
                         selectedTag === tag
-                          ? "bg-blue-600 text-white"
+                          ? "bg-black text-white"
                           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                       }`}
                     >
