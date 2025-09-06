@@ -26,14 +26,24 @@ function AuthProviderInner({ children }: { children: ReactNode }) {
     // Get initial session
     const getInitialSession = async () => {
       try {
+        // Check if Supabase is properly configured
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+          console.error('Supabase environment variables are missing');
+          setError('Configuration error: Missing Supabase credentials');
+          setLoading(false);
+          return;
+        }
+
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
+          console.error('Supabase auth error:', error);
           setError(error.message);
         } else {
           setUser(session?.user ?? null);
         }
       } catch (err) {
-        setError('Failed to get session');
+        console.error('Auth initialization error:', err);
+        setError('Failed to initialize authentication');
       } finally {
         setLoading(false);
       }
