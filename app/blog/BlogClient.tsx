@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { BlogPost } from "@/lib/supabase";
 
 type BlogClientProps = {
@@ -266,9 +267,11 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
                   <div className="lg:w-80">
                     {post.image && !imageErrors[post.id] ? (
                       <div className="aspect-video rounded-2xl overflow-hidden">
-                        <img
+                        <Image
                           src={post.image}
                           alt={post.title}
+                          width={320}
+                          height={180}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                           onError={() => setImageErrors(prev => ({ ...prev, [post.id]: true }))}
                         />

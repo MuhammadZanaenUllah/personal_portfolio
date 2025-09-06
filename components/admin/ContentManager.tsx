@@ -56,6 +56,7 @@ interface BlogPost {
 }
 
 type ContentType = 'projects' | 'skills' | 'blog';
+type EditingItem = Project | Skill | BlogPost | null;
 
 export default function ContentManager() {
   const [activeTab, setActiveTab] = useState<ContentType>('projects');
@@ -63,7 +64,7 @@ export default function ContentManager() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingItem, setEditingItem] = useState<Record<string, unknown> | null>(null);
+  const [editingItem, setEditingItem] = useState<EditingItem>(null);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -520,7 +521,7 @@ export default function ContentManager() {
                   type="text"
                   id="edit-title-name"
                   placeholder={`Enter ${activeTab === 'skills' ? 'skill name' : 'title'}`}
-                  value={(editingItem.title as string) || (editingItem.name as string) || ''}
+                  value={editingItem && 'title' in editingItem ? editingItem.title : editingItem && 'name' in editingItem ? editingItem.name : ''}
                   onChange={(e) => setEditingItem({
                     ...editingItem,
                     [activeTab === 'skills' ? 'name' : 'title']: e.target.value
@@ -539,7 +540,7 @@ export default function ContentManager() {
                     id="edit-description"
                     rows={3}
                     placeholder={`Enter ${activeTab === 'projects' ? 'description' : 'excerpt'}`}
-                    value={((editingItem as any).description || (editingItem as any).excerpt || '') as string}
+                    value={editingItem && 'description' in editingItem ? editingItem.description : editingItem && 'excerpt' in editingItem ? editingItem.excerpt : ''}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       [activeTab === 'projects' ? 'description' : 'excerpt']: e.target.value
@@ -556,7 +557,7 @@ export default function ContentManager() {
                     Image
                   </label>
                   <ImageUpload
-                    value={(editingItem as any).image as string}
+                    value={editingItem && 'image' in editingItem ? editingItem.image || '' : ''}
                     onChange={(url) => setEditingItem({
                       ...editingItem,
                       image: url || ''
@@ -577,7 +578,7 @@ export default function ContentManager() {
                     type="text"
                     id="edit-category"
                     placeholder="Enter category"
-                    value={((editingItem as any).category || '') as string}
+                    value={editingItem && 'category' in editingItem ? editingItem.category || '' : ''}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       category: e.target.value
@@ -597,7 +598,7 @@ export default function ContentManager() {
                     min="0"
                     max="100"
                     placeholder="Enter level percentage (0-100)"
-                    value={(editingItem.level as number) || 0}
+                    value={editingItem && 'level' in editingItem ? editingItem.level || 0 : 0}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       level: parseInt(e.target.value)
@@ -615,7 +616,7 @@ export default function ContentManager() {
                     type="text"
                     id="edit-skill-category"
                     placeholder="Enter skill category"
-                    value={((editingItem as any).category || '') as string}
+                    value={editingItem && 'category' in editingItem ? editingItem.category || '' : ''}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       category: e.target.value
@@ -631,7 +632,7 @@ export default function ContentManager() {
                   <input
                     type="checkbox"
                     id="edit-featured"
-                    checked={((editingItem as any).featured || false) as boolean}
+                    checked={editingItem && 'featured' in editingItem ? editingItem.featured || false : false}
                     onChange={(e) => setEditingItem({
                       ...editingItem,
                       featured: e.target.checked

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useCallback } from 'react'
+import Image from 'next/image'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { uploadImage, deleteImage } from '@/lib/supabase'
 import Button from './Button'
@@ -118,9 +119,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {value ? (
         <div className="relative group">
           <div className="relative w-full h-48 rounded-lg overflow-hidden border-2 border-gray-200">
-            <img
+            <Image
               src={value}
               alt="Uploaded image"
+              width={400}
+              height={192}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Github, ExternalLink } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import Card, { CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -9,10 +9,7 @@ import FeaturedProjects from '@/components/FeaturedProjects'
 import { 
   getPersonalInfo, 
   getFeaturedProjects, 
-  getFeaturedBlogPosts,
-  type PersonalInfo,
-  type Project,
-  type BlogPost
+  getFeaturedBlogPosts
 } from '@/lib/supabase'
 import { stats } from '@/data/skills' // Keep stats for now until we migrate them
 

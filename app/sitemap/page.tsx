@@ -129,7 +129,7 @@ const SitemapPage = async () => {
               
               <div className="p-6">
                 <div className="grid gap-4">
-                  {pages.map((page, index) => (
+                  {pages.map((page) => (
                     <div key={page.url} className="group">
                       <div className="flex items-start justify-between p-4 rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-300">
                         <div className="flex-1">

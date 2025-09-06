@@ -5,7 +5,7 @@ import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import NotificationSystem from "../components/NotificationSystem";
 import { AuthProvider } from "../contexts/AuthContext";
-import { Analytics } from "@vercel/analytics/next";
+
 
 const inter = Inter({
   subsets: ["latin"],

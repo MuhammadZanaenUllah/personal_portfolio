@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import type { Project } from "@/lib/supabase";
 
 interface ProjectsClientProps {
@@ -71,9 +72,11 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
               >
                 <div className="relative h-64 overflow-hidden">
                   {project.image && !imageErrors[project.id] ? (
-                    <img
+                    <Image
                       src={project.image}
                       alt={project.title}
+                      width={400}
+                      height={256}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
                     />
@@ -167,9 +170,11 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
             >
               <div className="relative h-48 overflow-hidden">
                 {project.image && !imageErrors[project.id] ? (
-                  <img
+                  <Image
                     src={project.image}
                     alt={project.title}
+                    width={400}
+                    height={192}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
                   />

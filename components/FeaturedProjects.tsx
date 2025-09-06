@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Github, ExternalLink } from 'lucide-react'
+import Image from 'next/image'
+import { Github, ExternalLink } from 'lucide-react'
 import Card, { CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
@@ -25,9 +26,11 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
           <div className="relative h-48 rounded-t-lg overflow-hidden">
             {project.image && !imageErrors[project.id] ? (
-              <img
+              <Image
                 src={project.image}
                 alt={project.title}
+                width={400}
+                height={192}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={() => handleImageError(project.id)}
               />
