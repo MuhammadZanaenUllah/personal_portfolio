@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import ImageUpload from '@/components/ui/ImageUpload';
 
 interface Project {
   id: string;
@@ -504,12 +505,13 @@ export default function ContentManager() {
         {activeTab === 'blog' && renderBlogPosts()}
       </div>
 
-      {/* Edit Modal (simplified) */}
+      {/* Edit Modal (Enhanced) */}
       {isEditing && editingItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">Edit {activeTab.slice(0, -1)}</h3>
             <div className="space-y-4">
+              {/* Title/Name Field */}
               <div>
                 <label htmlFor="edit-title-name" className="block text-sm font-medium text-gray-700 mb-1">
                   {activeTab === 'projects' ? 'Title' : activeTab === 'skills' ? 'Name' : 'Title'}
@@ -526,6 +528,66 @@ export default function ContentManager() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+
+              {/* Description/Excerpt Field */}
+              {(activeTab === 'projects' || activeTab === 'blog') && (
+                <div>
+                  <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700 mb-1">
+                    {activeTab === 'projects' ? 'Description' : 'Excerpt'}
+                  </label>
+                  <textarea
+                    id="edit-description"
+                    rows={3}
+                    placeholder={`Enter ${activeTab === 'projects' ? 'description' : 'excerpt'}`}
+                    value={((editingItem as any).description || (editingItem as any).excerpt || '') as string}
+                    onChange={(e) => setEditingItem({
+                      ...editingItem,
+                      [activeTab === 'projects' ? 'description' : 'excerpt']: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              {/* Image Upload Field */}
+              {(activeTab === 'projects' || activeTab === 'blog') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Image
+                  </label>
+                  <ImageUpload
+                    value={(editingItem as any).image as string}
+                    onChange={(url) => setEditingItem({
+                      ...editingItem,
+                      image: url || ''
+                    })}
+                    accept="image/*"
+                    maxSize={5}
+                  />
+                </div>
+              )}
+
+              {/* Category Field */}
+              {(activeTab === 'projects' || activeTab === 'blog') && (
+                <div>
+                  <label htmlFor="edit-category" className="block text-sm font-medium text-gray-700 mb-1">
+                    Category
+                  </label>
+                  <input
+                    type="text"
+                    id="edit-category"
+                    placeholder="Enter category"
+                    value={((editingItem as any).category || '') as string}
+                    onChange={(e) => setEditingItem({
+                      ...editingItem,
+                      category: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              {/* Skills Level Field */}
               {activeTab === 'skills' && (
                 <div>
                   <label htmlFor="edit-level" className="block text-sm font-medium text-gray-700 mb-1">Level (%)</label>
@@ -542,6 +604,43 @@ export default function ContentManager() {
                     })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                </div>
+              )}
+
+              {/* Skills Category Field */}
+              {activeTab === 'skills' && (
+                <div>
+                  <label htmlFor="edit-skill-category" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <input
+                    type="text"
+                    id="edit-skill-category"
+                    placeholder="Enter skill category"
+                    value={((editingItem as any).category || '') as string}
+                    onChange={(e) => setEditingItem({
+                      ...editingItem,
+                      category: e.target.value
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              {/* Featured Toggle */}
+              {(activeTab === 'projects' || activeTab === 'blog') && (
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="edit-featured"
+                    checked={((editingItem as any).featured || false) as boolean}
+                    onChange={(e) => setEditingItem({
+                      ...editingItem,
+                      featured: e.target.checked
+                    })}
+                    className="mr-2"
+                  />
+                  <label htmlFor="edit-featured" className="text-sm font-medium text-gray-700">
+                    Featured
+                  </label>
                 </div>
               )}
             </div>

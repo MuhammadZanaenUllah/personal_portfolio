@@ -4,6 +4,8 @@ import Card, { CardContent } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import AnimatedSection from '@/components/ui/AnimatedSection'
+import FeaturedProjects from '@/components/FeaturedProjects'
+
 import { 
   getPersonalInfo, 
   getFeaturedProjects, 
@@ -126,57 +128,7 @@ export default async function Home() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProjects.slice(0, 3).map((project) => (
-              <Card key={project.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-                <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 rounded-t-lg overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-50">
-                    {project.category === 'Full Stack' && '🚀'}
-                    {project.category === 'Frontend' && '🎨'}
-                    {project.category === 'Mobile' && '📱'}
-                    {project.category === 'Data Visualization' && '📊'}
-                  </div>
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge variant="secondary">{project.category}</Badge>
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      project.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      project.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {project.status.replace('-', ' ')}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-900">{project.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                     {project.technologies.slice(0, 3).map((tech) => (
-                       <Badge key={tech} variant="default" className="text-xs">{tech}</Badge>
-                     ))}
-                     {project.technologies.length > 3 && (
-                       <Badge variant="default" className="text-xs">+{project.technologies.length - 3}</Badge>
-                     )}
-                  </div>
-                  <div className="flex gap-2">
-                    {project.live_url && (
-                      <Button size="sm" className="flex-1">
-                        <ExternalLink className="w-4 h-4 mr-1" />
-                        Live Demo
-                      </Button>
-                    )}
-                    {project.github_url && (
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Github className="w-4 h-4 mr-1" />
-                        Code
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <FeaturedProjects projects={featuredProjects} />
           
           <div className="text-center mt-12">
             <Link href="/projects">

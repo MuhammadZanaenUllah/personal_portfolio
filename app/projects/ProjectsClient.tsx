@@ -9,6 +9,7 @@ interface ProjectsClientProps {
 export default function ProjectsClient({ projects }: ProjectsClientProps) {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({});
 
   // Extract unique categories from projects
   const uniqueCategories = Array.from(
@@ -68,8 +69,19 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
                 key={project.id}
                 className="bg-white rounded-3xl overflow-hidden shadow-xl card-hover group"
               >
-                <div className="relative h-64 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                  <div className="text-6xl opacity-50">🚀</div>
+                <div className="relative h-64 overflow-hidden">
+                  {project.image && !imageErrors[project.id] ? (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
+                    />
+                  ) : (
+                    <div className="bg-gradient-to-br from-blue-100 to-purple-100 w-full h-full flex items-center justify-center">
+                      <div className="text-6xl opacity-50">🚀</div>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
                 </div>
                 <div className="p-8">
@@ -153,8 +165,19 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
               key={project.id}
               className="bg-white rounded-2xl overflow-hidden shadow-lg card-hover group"
             >
-              <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <div className="text-4xl opacity-50">💻</div>
+              <div className="relative h-48 overflow-hidden">
+                {project.image && !imageErrors[project.id] ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
+                  />
+                ) : (
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-full h-full flex items-center justify-center">
+                    <div className="text-4xl opacity-50">💻</div>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
               </div>
               <div className="p-6">

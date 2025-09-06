@@ -11,6 +11,7 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedTag, setSelectedTag] = useState<string>("");
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({});
 
   // Extract unique categories from blog posts
   const blogCategories = Array.from(
@@ -261,16 +262,27 @@ export default function BlogClient({ blogPosts }: BlogClientProps) {
                     </Link>
                   </div>
 
-                  {/* Featured Image Placeholder */}
+                  {/* Featured Image */}
                   <div className="lg:w-80">
-                    <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-4xl mb-2">📖</div>
-                        <p className="text-gray-600 font-medium">
-                          {post.category}
-                        </p>
+                    {post.image && !imageErrors[post.id] ? (
+                      <div className="aspect-video rounded-2xl overflow-hidden">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                          onError={() => setImageErrors(prev => ({ ...prev, [post.id]: true }))}
+                        />
                       </div>
-                    </div>
+                    ) : (
+                      <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-4xl mb-2">📖</div>
+                          <p className="text-gray-600 font-medium">
+                            {post.category}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </article>

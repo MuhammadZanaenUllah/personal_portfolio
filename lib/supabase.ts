@@ -5,6 +5,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// Admin client is now handled server-side via API routes
+
 // Database Types
 export interface ContactForm {
   id?: string
@@ -516,5 +518,49 @@ export const incrementBlogPostLikes = async (slug: string): Promise<void> => {
     }
   } catch (error) {
     console.log('Blog post likes increment error:', error)
+  }
+}
+
+// Image Upload Functions
+export const uploadImage = async (file: File, bucket: string = 'images'): Promise<string | null> => {
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('bucket', bucket)
+
+    const response = await fetch('/api/upload-image', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Upload failed')
+    }
+
+    const data = await response.json()
+    return data.url
+  } catch (error) {
+    console.error('Error uploading image:', error)
+    throw error
+  }
+}
+
+export const deleteImage = async (url: string, bucket: string = 'images'): Promise<boolean> => {
+  try {
+    const response = await fetch(`/api/delete-image?url=${encodeURIComponent(url)}&bucket=${bucket}`, {
+      method: 'DELETE'
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Error deleting image:', errorData.error)
+      return false
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error deleting image:', error)
+    return false
   }
 }
