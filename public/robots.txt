@@ -1,0 +1,15 @@
+# robots.txt for Portfolio Website
+
+# Allow all web crawlers to access all content
+User-agent: *
+Allow: /
+
+# Disallow access to admin areas
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://zanaen.pk/sitemap.xml
+
+# Crawl-delay (optional - helps prevent server overload)
+Crawl-delay: 1
