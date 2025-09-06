@@ -62,7 +62,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     } catch (error) {
       console.error('Upload error:', error)
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload image. Please try again.'
-      setError(`Upload failed: ${errorMessage}`)
+      
+      // Check if it's an authentication error
+      if (errorMessage.includes('auth') || errorMessage.includes('Authentication') || errorMessage.includes('unauthorized')) {
+        setError('Authentication required. Please refresh the page and log in again.')
+      } else {
+        setError(`Upload failed: ${errorMessage}`)
+      }
     } finally {
       setIsUploading(false)
     }
@@ -103,7 +109,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         onChange(null)
       } catch (error) {
         console.error('Delete error:', error)
-        setError('Failed to delete image')
+        const errorMessage = error instanceof Error ? error.message : 'Failed to delete image'
+        
+        // Check if it's an authentication error
+        if (errorMessage.includes('auth') || errorMessage.includes('Authentication') || errorMessage.includes('unauthorized')) {
+          setError('Authentication required. Please refresh the page and log in again.')
+        } else {
+          setError('Failed to delete image')
+        }
       } finally {
         setIsUploading(false)
       }

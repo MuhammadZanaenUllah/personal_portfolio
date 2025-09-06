@@ -168,49 +168,66 @@ export default function ContentManager() {
     if (!editingItem) return;
 
     try {
-      let table = '';
-      switch (activeTab) {
-        case 'projects':
-          table = 'projects';
-          break;
-        case 'skills':
-          table = 'skills';
-          break;
-        case 'blog':
-          table = 'blog_posts';
-          break;
-      }
+      if (activeTab === 'projects') {
+        // Use API route for projects to avoid CORS issues
+        const response = await fetch('/api/projects', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(editingItem),
+        });
 
-      const { error } = await supabase
-        .from(table)
-        .update(editingItem)
-        .eq('id', editingItem.id);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to save project');
+        }
 
-      if (error) throw error;
-      
-      // Update local state immediately
-      switch (activeTab) {
-        case 'projects':
-          setProjects(prev => prev.map(p => 
-            p.id === editingItem.id ? { ...p, ...editingItem } : p
-          ));
-          break;
-        case 'skills':
-          setSkills(prev => prev.map(s => 
-            s.id === editingItem.id ? { ...s, ...editingItem } : s
-          ));
-          break;
-        case 'blog':
-          setBlogPosts(prev => prev.map(b => 
-            b.id === editingItem.id ? { ...b, ...editingItem } : b
-          ));
-          break;
+        const updatedProject = await response.json();
+        
+        // Update local state immediately
+        setProjects(prev => prev.map(p => 
+          p.id === editingItem.id ? updatedProject : p
+        ));
+      } else {
+        // Use direct Supabase calls for skills and blog posts
+        let table = '';
+        switch (activeTab) {
+          case 'skills':
+            table = 'skills';
+            break;
+          case 'blog':
+            table = 'blog_posts';
+            break;
+        }
+
+        const { error } = await supabase
+          .from(table)
+          .update(editingItem)
+          .eq('id', editingItem.id);
+
+        if (error) throw error;
+        
+        // Update local state immediately
+        switch (activeTab) {
+          case 'skills':
+            setSkills(prev => prev.map(s => 
+              s.id === editingItem.id ? { ...s, ...editingItem } : s
+            ));
+            break;
+          case 'blog':
+            setBlogPosts(prev => prev.map(b => 
+              b.id === editingItem.id ? { ...b, ...editingItem } : b
+            ));
+            break;
+        }
       }
       
       setIsEditing(false);
       setEditingItem(null);
     } catch (error) {
       console.error('Error saving item:', error);
+      alert('Failed to save changes. Please try again.');
     }
   };
 
@@ -218,58 +235,82 @@ export default function ContentManager() {
     if (!confirm('Are you sure you want to delete this item?')) return;
 
     try {
-      let table = '';
-      switch (activeTab) {
-        case 'projects':
-          table = 'projects';
-          break;
-        case 'skills':
-          table = 'skills';
-          break;
-        case 'blog':
-          table = 'blog_posts';
-          break;
-      }
+      if (activeTab === 'projects') {
+        // Use API route for projects to avoid CORS issues
+        const response = await fetch(`/api/projects?id=${id}`, {
+          method: 'DELETE',
+        });
 
-      const { error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to delete project');
+        }
 
-      if (error) throw error;
-      
-      // Update local state immediately
-      switch (activeTab) {
-        case 'projects':
-          setProjects(prev => prev.filter(p => p.id !== id));
-          break;
-        case 'skills':
-          setSkills(prev => prev.filter(s => s.id !== id));
-          break;
-        case 'blog':
-          setBlogPosts(prev => prev.filter(b => b.id !== id));
-          break;
+        // Update local state immediately
+        setProjects(prev => prev.filter(p => p.id !== id));
+      } else {
+        // Use direct Supabase calls for skills and blog posts
+        let table = '';
+        switch (activeTab) {
+          case 'skills':
+            table = 'skills';
+            break;
+          case 'blog':
+            table = 'blog_posts';
+            break;
+        }
+
+        const { error } = await supabase
+          .from(table)
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        
+        // Update local state immediately
+        switch (activeTab) {
+          case 'skills':
+            setSkills(prev => prev.filter(s => s.id !== id));
+            break;
+          case 'blog':
+            setBlogPosts(prev => prev.filter(b => b.id !== id));
+            break;
+        }
       }
     } catch (error) {
       console.error('Error deleting item:', error);
+      alert('Failed to delete item. Please try again.');
     }
   };
 
   const toggleFeatured = async (project: Project) => {
     try {
-      const { error } = await supabase
-        .from('projects')
-        .update({ featured: !project.featured })
-        .eq('id', project.id);
+      // Use API route for projects to avoid CORS issues
+      const response = await fetch('/api/projects', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...project,
+          featured: !project.featured
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to toggle featured status');
+      }
+
+      const updatedProject = await response.json();
       
       // Update local state immediately
       setProjects(prev => prev.map(p => 
-        p.id === project.id ? { ...p, featured: !p.featured } : p
+        p.id === project.id ? updatedProject : p
       ));
     } catch (error) {
       console.error('Error toggling featured:', error);
+      alert('Failed to update featured status. Please try again.');
     }
   };
 
