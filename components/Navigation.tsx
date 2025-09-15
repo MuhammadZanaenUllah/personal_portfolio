@@ -1,7 +1,7 @@
-'use client';
-import React, { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface NavItem {
   name: string;
@@ -18,20 +18,22 @@ const Navigation: React.FC = () => {
 
   const navItems: NavItem[] = useMemo(() => {
     const baseItems = [
-      { name: 'Home', href: '/', icon: '🏠' },
-      { name: 'About', href: '/about', icon: '👨‍💻' },
-      { name: 'Skills', href: '/skills', icon: '⚡' },
-      { name: 'Projects', href: '/projects', icon: '🚀' },
-      { name: 'Blog', href: '/blog', icon: '📝' },
-      { name: 'Contact', href: '/contact', icon: '📧' }
+      { name: "Home", href: "/", icon: "🏠" },
+      { name: "About", href: "/about", icon: "👨‍💻" },
+      { name: "Skills", href: "/skills", icon: "⚡" },
+      { name: "Projects", href: "/projects", icon: "🚀" },
+      { name: "Blog", href: "/blog", icon: "📝" },
+      { name: "Contact", href: "/contact", icon: "📧" },
     ];
 
     // Add admin link in development or with admin parameter
-    const showAdmin = process.env.NODE_ENV === 'development' || 
-      (typeof window !== 'undefined' && window.location.search.includes('admin=true'));
-    
+    const showAdmin =
+      process.env.NODE_ENV === "development" ||
+      (typeof window !== "undefined" &&
+        window.location.search.includes("admin=true"));
+
     if (showAdmin) {
-      baseItems.push({ name: 'Admin', href: '/admin', icon: '⚙️' });
+      baseItems.push({ name: "Admin", href: "/admin", icon: "⚙️" });
     }
 
     return baseItems;
@@ -49,26 +51,26 @@ const Navigation: React.FC = () => {
     // Set initial window width
     setWindowWidth(window.innerWidth);
 
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   const isActive = (href: string) => {
-    if (href === '/') {
-      return pathname === '/';
+    if (href === "/") {
+      return pathname === "/";
     }
     return pathname.startsWith(href);
   };
 
   // Update active index when pathname changes
   useEffect(() => {
-    const currentIndex = navItems.findIndex(item => {
-      if (item.href === '/') {
-        return pathname === '/';
+    const currentIndex = navItems.findIndex((item) => {
+      if (item.href === "/") {
+        return pathname === "/";
       }
       return pathname.startsWith(item.href);
     });
@@ -78,11 +80,13 @@ const Navigation: React.FC = () => {
   }, [pathname, navItems]);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out animate-in slide-in-from-top-4 fade-in ${
-      scrolled 
-        ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200' 
-        : 'bg-transparent'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out animate-in slide-in-from-top-4 fade-in ${
+        scrolled
+          ? "bg-white backdrop-blur-lg shadow-lg border-b border-gray-200"
+          : "bg-white" // keep slightly transparent but never dark
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -98,12 +102,14 @@ const Navigation: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center relative">
-            {/* Sliding background indicator - only show on larger screens */}
-            <div 
-              className="absolute w-24 lg:w-28 h-10 bg-black rounded-full transition-all duration-500 ease-out shadow-lg hidden sm:block"
+            {/* Sliding background indicator */}
+            <div
+              className="absolute w-24 lg:w-28 h-10 bg-gray-900 rounded-full transition-all duration-500 ease-out shadow-lg hidden sm:block"
               style={{
-                transform: `translateX(${activeIndex * (windowWidth >= 1024 ? 112 : 96)}px)`,
-                zIndex: 0
+                transform: `translateX(${
+                  activeIndex * (windowWidth >= 1024 ? 112 : 96)
+                }px)`,
+                zIndex: 0,
               }}
             />
             {navItems.map((item, index) => (
@@ -112,17 +118,17 @@ const Navigation: React.FC = () => {
                 href={item.href}
                 className={`w-24 lg:w-28 px-3 lg:px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ease-out flex items-center justify-center gap-2 hover:scale-105 hover:-translate-y-1 relative group animate-in slide-in-from-top-2 fade-in z-10 ${
                   isActive(item.href)
-                    ? 'text-white'
-                    : 'text-gray-700 hover:text-black'
+                    ? "text-white"
+                    : "text-gray-700 hover:text-black"
                 }`}
                 style={{
-                  animationDelay: `${index * 100}ms`
+                  animationDelay: `${index * 100}ms`,
                 }}
               >
-                <span className="text-base transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">{item.icon}</span>
-                <span className="relative hidden sm:inline">
-                  {item.name}
+                <span className="text-base transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
+                  {item.icon}
                 </span>
+                <span className="relative hidden sm:inline">{item.name}</span>
               </Link>
             ))}
           </div>
@@ -131,7 +137,7 @@ const Navigation: React.FC = () => {
           <div className="hidden md:block">
             <Link
               href="/contact"
-              className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
+              className="bg-gray-900 text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
             >
               Let&apos;s Talk
             </Link>
@@ -142,28 +148,36 @@ const Navigation: React.FC = () => {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:scale-110 transition-all duration-300 group animate-in slide-in-from-top-2 fade-in"
             style={{
-              animationDelay: `${navItems.length * 100}ms`
+              animationDelay: `${navItems.length * 100}ms`,
             }}
             aria-label="Toggle mobile menu"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
-                isOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'
-              }`} />
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
-                isOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
-              }`} />
-              <span className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
-                isOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'
-              }`} />
+              <span
+                className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
+                  isOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
+                }`}
+              />
+              <span
+                className={`block w-5 h-0.5 bg-current transition-all duration-300 ${
+                  isOpen ? "opacity-0 scale-0" : "opacity-100 scale-100"
+                }`}
+              />
+              <span
+                className={`block w-5 h-0.5 bg-current transition-all duration-500 ease-out ${
+                  isOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
+                }`}
+              />
             </div>
           </button>
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden transition-all duration-500 ease-out overflow-hidden ${
-          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}>
+        <div
+          className={`md:hidden transition-all duration-500 ease-out overflow-hidden ${
+            isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
           <div className="py-4 space-y-2">
             {navItems.map((item, index) => (
               <Link
@@ -171,35 +185,47 @@ const Navigation: React.FC = () => {
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-500 ease-out flex items-center gap-3 hover:scale-105 hover:-translate-y-1 hover:shadow-md group ${
-                  isOpen ? 'animate-in slide-in-from-left-4 fade-in' : 'animate-out slide-out-to-left-4 fade-out'
+                  isOpen
+                    ? "animate-in slide-in-from-left-4 fade-in"
+                    : "animate-out slide-out-to-left-4 fade-out"
                 } ${
                   isActive(item.href)
-                    ? 'bg-black text-white shadow-lg transform scale-105'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-black'
+                    ? "bg-gray-900 text-white shadow-lg transform scale-105"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-black"
                 }`}
                 style={{
-                  animationDelay: isOpen ? `${index * 100 + 200}ms` : '0ms'
+                  animationDelay: isOpen ? `${index * 100 + 200}ms` : "0ms",
                 }}
               >
-                <span className="text-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">{item.icon}</span>
+                <span className="text-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
+                  {item.icon}
+                </span>
                 <span className="relative">
                   {item.name}
-                  <span className={`absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full ${
-                    isActive(item.href) ? 'w-full' : ''
-                  }`} />
+                  <span
+                    className={`absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 group-hover:w-full ${
+                      isActive(item.href) ? "w-full" : ""
+                    }`}
+                  />
                 </span>
               </Link>
             ))}
-            <div className={`pt-4 border-t border-gray-200 transition-all duration-500 ease-out ${
-              isOpen ? 'animate-in slide-in-from-left-4 fade-in' : 'animate-out slide-out-to-left-4 fade-out'
-            }`}
-            style={{
-              animationDelay: isOpen ? `${navItems.length * 100 + 300}ms` : '0ms'
-            }}>
+            <div
+              className={`pt-4 border-t border-gray-200 transition-all duration-500 ease-out ${
+                isOpen
+                  ? "animate-in slide-in-from-left-4 fade-in"
+                  : "animate-out slide-out-to-left-4 fade-out"
+              }`}
+              style={{
+                animationDelay: isOpen
+                  ? `${navItems.length * 100 + 300}ms`
+                  : "0ms",
+              }}
+            >
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
+                className="block w-full text-center bg-gray-900 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300 shadow-lg"
               >
                 Let&apos;s Talk
               </Link>
