@@ -31,6 +31,8 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                 alt={project.title}
                 width={400}
                 height={192}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+                unoptimized
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={() => handleImageError(project.id)}
               />

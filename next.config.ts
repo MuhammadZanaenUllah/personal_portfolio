@@ -1,5 +1,14 @@
 import withMDX from "@next/mdx";
 
+// Derive Supabase hostname from env for remote image patterns
+const supabaseHostname = (() => {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || "").hostname;
+  } catch {
+    return undefined;
+  }
+})();
+
 const nextConfig = withMDX({
   extension: /\.mdx?$/,
   options: {
@@ -8,6 +17,18 @@ const nextConfig = withMDX({
   },
 })({
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: supabaseHostname
+      ? [
+          {
+            protocol: "https",
+            hostname: supabaseHostname,
+            pathname: "/storage/v1/object/public/**",
+          },
+        ]
+      : [],
+  },
   async headers() {
     return [
       {

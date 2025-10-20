@@ -45,6 +45,10 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
 
   const featuredProjects = projects.filter((project) => project.featured);
 
+  const handleImageError = (projectId: string) => {
+    setImageErrors(prev => ({ ...prev, [projectId]: true }))
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,15 +81,18 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
                       alt={project.title}
                       width={400}
                       height={256}
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      unoptimized
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
+                      onError={() => handleImageError(project.id)}
                     />
                   ) : (
                     <div className="bg-gradient-to-br from-blue-100 to-purple-100 w-full h-full flex items-center justify-center">
                       <div className="text-6xl opacity-50">🚀</div>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                  {/* Replace deprecated bg-opacity utilities with opacity to avoid full-black overlay */}
+                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-all duration-300"></div>
                 </div>
                 <div className="p-8">
                   <div className="flex items-center justify-between mb-4">
@@ -136,9 +143,9 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
                     >
                       Details
                     </button>
-                  </div>
                 </div>
               </div>
++             </div>
             ))}
           </div>
         </div>
@@ -175,15 +182,17 @@ export default function ProjectsClient({ projects }: ProjectsClientProps) {
                     alt={project.title}
                     width={400}
                     height={192}
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    unoptimized
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={() => setImageErrors(prev => ({ ...prev, [project.id]: true }))}
+                    onError={() => handleImageError(project.id)}
                   />
                 ) : (
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-full h-full flex items-center justify-center">
                     <div className="text-4xl opacity-50">💻</div>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-all duration-300"></div>
               </div>
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
